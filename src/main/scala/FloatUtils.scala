@@ -1,3 +1,5 @@
+// scalastyle:off
+
 package ChiselFloat
 
 import java.lang.Float.{floatToRawIntBits, intBitsToFloat}

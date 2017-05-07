@@ -1,3 +1,4 @@
+// scalastyle:off
 package ChiselFloat
 
 import chisel3._
@@ -26,16 +27,17 @@ class FPMult(val n: Int) extends Module {
     val stage1_mantissa = a_wrap.mantissa * b_wrap.mantissa
     val stage1_zero = a_wrap.zero || b_wrap.zero
 
-    val sign_reg = RegNext(next=stage1_sign)
-    val exponent_reg = RegNext(next = stage1_exponent)
-    val mantissa_reg = RegNext(next = stage1_mantissa)
-    val zero_reg = RegNext(next = stage1_zero)
+    val sign_reg = RegNext(stage1_sign)
+    val exponent_reg = RegNext(stage1_exponent)
+    val mantissa_reg = RegNext(stage1_mantissa)
+    val zero_reg = RegNext(stage1_zero)
 
     val stage2_sign = sign_reg
-    val stage2_exponent = UInt((a_wrap.exponent.getWidth).W)
-    val stage2_mantissa = UInt((a_wrap.mantissa.getWidth - 1).W)
+    val stage2_exponent = exponent_reg
+    val stage2_mantissa = mantissa_reg
 
-    val (mantissaLead, mantissaSize, exponentSize, exponentSub) = n match {
+
+  val (mantissaLead, mantissaSize, exponentSize, exponentSub) = n match {
         case 32 => (47, 23, 8, 127)
         case 64 => (105, 52, 11, 1023)
     }
@@ -43,16 +45,14 @@ class FPMult(val n: Int) extends Module {
     val rounder = Module(new MantissaRounder(mantissaSize + 1))
 
     when (zero_reg) {
-        stage2_exponent := 0.U(exponentSize.W)
-        rounder.io.in := 0.U((mantissaSize + 1).W)
+      stage2_exponent := 0.U(exponentSize.W)
+      rounder.io.in := 0.U((mantissaSize + 1).W)
     } .elsewhen (mantissa_reg(mantissaLead) === 1.U) {
-        stage2_exponent := exponent_reg - UInt((exponentSub - 1).W)
-        rounder.io.in := mantissa_reg(mantissaLead - 1,
-                                      mantissaLead - mantissaSize - 1)
+      stage2_exponent := exponent_reg - (exponentSub.U - 1.U)
+      rounder.io.in := mantissa_reg(mantissaLead - 1, mantissaLead - mantissaSize - 1)
     } .otherwise {
-        stage2_exponent := exponent_reg - UInt((exponentSub).W)
-        rounder.io.in := mantissa_reg(mantissaLead - 2,
-                                      mantissaLead - mantissaSize - 2)
+      stage2_exponent := exponent_reg - exponentSub.U
+      rounder.io.in := mantissa_reg(mantissaLead - 2, mantissaLead - mantissaSize - 2)
     }
 
     stage2_mantissa := rounder.io.out

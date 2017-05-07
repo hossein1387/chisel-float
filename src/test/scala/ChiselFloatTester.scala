@@ -1,3 +1,4 @@
+// scalastyle:off
 package ChiselFloat
 
 import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
