@@ -1,13 +1,11 @@
 # A basic chisel project
 
-This is based on [chisel-template](https://github.com/ucb-bar/chisel-template) repository but without example dirs!
+This is based on [chisel-float](https://github.com/zhemao/chisel-float) repository. The original 
+repository was set up to use Chisel2 where in this repo, I tried to use Chisel3 conventions. 
 
 To use this repository, first clone it:
 
-    git clone https://github.com/hossein1387/BaseChiselProj.git
+    git clone https://github.com/hossein1387/chisel-float
+    git checkout --track origin/chisel_3_mod
 
-To use this repository with IntelliJ IDEA run the project from command line by running:
 
-    sbt run
-
-And then import the project in IntelliJ as an sbt project. For some reason, if you don't run the project before importing it to InjtelliJ, Injtellij would not be able to find chisel dependency.
