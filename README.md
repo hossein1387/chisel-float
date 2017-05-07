@@ -1,4 +1,4 @@
-# A basic chisel project
+# Chisel3 Float repo
 
 This is based on [chisel-float](https://github.com/zhemao/chisel-float) repository. The original 
 repository was set up to use Chisel2 where in this repo, I tried to use Chisel3 conventions. 
